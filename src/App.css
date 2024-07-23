@@ -4,6 +4,28 @@
   padding: 2rem;
   text-align: center;
 }
+/* main {
+  display: flex;
+  flex-direction: column;
+} */
+.board {
+  display: flex;
+  flex-direction: column;
+  border: 2px solid black;
+  p {
+    margin: 0px;
+    padding: 0px;
+  }
+}
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.square {
+  height: 60px;
+  width: 60px;
+}
 
 .black {
   background-color: black;
