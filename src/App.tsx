@@ -20,6 +20,8 @@ function App() {
   //   });
   // };
 
+  const [turn, setTurn] = useState("black");
+
   function fetchIcon(type: PieceTypes) {
     switch (type) {
       case "rook":
@@ -80,10 +82,12 @@ function App() {
     // remove
   };
 
+  const handleMove = () => {};
+
   return (
     <>
       <main>
-        <Board squares={board} />
+        <Board squares={board} turn={turn} />
 
         <button onClick={() => modifyBoard(new Coords(5, 5), new Coords(5, 6))}>
           TEST: add piece
