@@ -23,7 +23,7 @@ function App() {
   //   });
   // };
 
-  const [turn, setTurn] = useState("black");
+  const [turn, setTurn] = useState("white");
   const [selectedPiece, setSelectedPiece] = useState<SelectedPieceShape>({
     coords: null,
     type: null,
@@ -68,10 +68,10 @@ function App() {
   // }
 
   // compare the coordinates of the current square with move patterns to check if it can be moved to
-  function highlightMoves(squareCoords: Coords): boolean {
-    console.log(
-      `Square coords: ${squareCoords.getY()}, ${squareCoords.getX()}`
-    );
+  function checkSquareValidity(squareCoords: Coords): boolean {
+    // console.log(
+    //   `Square coords: ${squareCoords.getY()}, ${squareCoords.getX()}`
+    // );
 
     // if no piece is selected, skip
     if (selectedPiece.coords === null || selectedPiece.type === null)
@@ -94,6 +94,7 @@ function App() {
     const movePattern = movePatterns.find((x) => x.type === selectedPiece.type);
     if (!movePattern) return false;
 
+    // for
     for (let i: number = 0; i < movePattern.coords.length; ++i) {
       const yTotal: number =
         movePattern.coords[i].getY() + selectedPiece.coords.getY();
@@ -107,7 +108,6 @@ function App() {
       // check if square is within range of current element
       if (squareCoords.getY() === yTotal && squareCoords.getX() === xTotal) {
         const valueAtCurrentPattern = board[yTotal][xTotal];
-        console.log("Within range");
         if (
           valueAtCurrentPattern === null ||
           valueAtCurrentPattern?.getColour() !== turn
@@ -115,35 +115,45 @@ function App() {
           return true;
       }
     }
-
-    // If loop fails to find the square within range, return false.
     return false;
   }
 
   // set currently selected piece
-  function handleSelect(selectedColour: Colours, coords: Coords) {
-    // check if the piece is right colour
+  function handleSelect(selectedColour: Colours, newCoords: Coords) {
+    // console.log(`Selected colour ${selectedColour}, turn colour: ${turn}`);
+    // console.log("Type value at coords: ");
+    console.log(board[newCoords.getY()][newCoords.getX()]);
 
-    if (selectedColour !== turn) {
-      console.log("Wrong colour");
-      return;
+    const selectedSquare = board[newCoords.getY()][newCoords.getX()];
+
+    if (selectedPiece.coords === null) {
+      // if square is empty, ignore
+      if (selectedSquare === null) return;
+
+      // if piece is opposite colour, ignore
+      if (selectedColour !== turn) return;
+
+      setSelectedPiece({
+        coords: newCoords,
+        type: selectedSquare.getType(),
+      });
+    } else if (selectedPiece.coords) {
+      if (selectedSquare === null || selectedColour !== turn) {
+        console.log("Move to square");
+      }
+      if (selectedColour === turn) {
+        console.log("Switch selection");
+        setSelectedPiece({
+          coords: newCoords,
+          type: selectedSquare.getType(),
+        });
+      }
     }
-    // check if not empty
-    else if (board[coords.getY()][coords.getX()] === null) {
-      return;
-    }
-
-    console.log("Type value at coords: ");
-    console.log(board[coords.getY()][coords.getX()].getType());
-
-    setSelectedPiece({
-      coords: coords,
-      type: board[coords.getY()][coords.getX()].getType(),
-    });
-
-    console.log(selectedPiece); // not working
-    // display available spaces (add "highlight" value to available squares)
   }
+
+  const toggleTurn = () => {
+    turn === "white" ? setTurn("black") : setTurn("white");
+  };
 
   const modifyBoard = (oldCoords: Coords, newCoords: Coords) => {
     setBoard((prev: any[]) => {
@@ -166,11 +176,9 @@ function App() {
       return newBoard;
     });
 
-    turn === "white" ? setTurn("black") : setTurn("white");
+    toggleTurn();
     // remove
   };
-
-  //const handleMove = () => {};
 
   return (
     <>
@@ -180,10 +188,16 @@ function App() {
           squares={board}
           turn={turn}
           onSelect={handleSelect}
-          onHighlight={highlightMoves}
+          onCheck={checkSquareValidity}
         />
-        <button onClick={() => modifyBoard(new Coords(4, 2), new Coords(4, 3))}>
+        <button
+          onClick={() => modifyBoard(new Coords(4, 2), new Coords(4, 3))}
+          className="btn"
+        >
           TEST: add piece
+        </button>
+        <button onClick={() => toggleTurn()} className="btn">
+          Toggle turn
         </button>
       </main>
     </>

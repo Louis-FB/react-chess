@@ -6,7 +6,7 @@ interface PropsInterface {
   squares: any[];
   turn: Colours;
   onSelect: Function;
-  onHighlight: Function;
+  onCheck: Function;
 }
 
 export default function Board(Props: any) {
@@ -24,7 +24,7 @@ export default function Board(Props: any) {
                 coords={new Coords(rowKey, colKey)}
                 turn={Props.turn}
                 onSelect={Props.onSelect}
-                highlight={Props.onHighlight(new Coords(rowKey, colKey))}
+                highlight={Props.onCheck(new Coords(rowKey, colKey))}
               />
               // {() => setFirstBlack(!firstBlack)};
             ))}
