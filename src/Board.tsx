@@ -1,11 +1,12 @@
-import { useState } from "react";
 import Square from "./Square";
 import { Colours } from "./data/types";
 import { Coords } from "./data/classes";
 
-interface Props {
+interface PropsInterface {
   squares: any[];
   turn: Colours;
+  onSelect: Function;
+  onHighlight: Function;
 }
 
 export default function Board(Props: any) {
@@ -19,9 +20,11 @@ export default function Board(Props: any) {
               <Square
                 key={colKey}
                 value={square ? square : null}
-                colour={(rowKey + colKey) % 2 === 0 ? "black" : "white"}
+                squareColour={(rowKey + colKey) % 2 === 0 ? "black" : "white"}
                 coords={new Coords(rowKey, colKey)}
                 turn={Props.turn}
+                onSelect={Props.onSelect}
+                highlight={Props.onHighlight(new Coords(rowKey, colKey))}
               />
               // {() => setFirstBlack(!firstBlack)};
             ))}

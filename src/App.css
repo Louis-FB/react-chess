@@ -34,6 +34,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
 }
 .icon {
   font-size: 3rem;
@@ -45,4 +46,8 @@
 
 .white {
   background: none;
+}
+
+.highlight {
+  outline: 2px solid red;
 }

@@ -1,35 +1,22 @@
-import React from "react";
-import { Coords, Piece } from "./data/classes";
+import { Coords } from "./data/classes";
 import { Colours } from "./data/types";
 
-interface Props {
+interface PropsInterface {
   value: any;
-  colour: Colours;
+  squareColour: Colours;
   coords: Coords;
   turn: Colours;
+  onSelect: Function;
+  highlight: boolean;
 }
 
-export default function Square(Props: any) {
-  var turn: Colours = "white";
-
-  const logCoords = (coords: Coords) => {
-    console.log(`y: ${coords.getY()}, x: ${coords.getX()}`);
-  };
-
-  function handleSelect() {
-    console.log(`Colour: ${Props.colour} Turn: ${Props.turn}`);
-    if (Props.colour === turn) {
-      console.log("Correct colour");
-    } else {
-      console.log("Incorrect colour");
-    }
-  }
-
+export default function Square(Props: PropsInterface) {
   return (
     <div
-      //style={{ backgroundColor: Props.colour }}
-      className={`${Props.colour} square`}
-      onClick={() => handleSelect()}
+      className={`${Props.squareColour} ${
+        Props.highlight ? "highlight" : ""
+      } square`}
+      onClick={() => Props.onSelect(Props.value.getColour(), Props.coords)} // formerly Props.value.coords
     >
       <span className="icon">{Props.value ? Props.value.getIcon() : null}</span>
     </div>
