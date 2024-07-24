@@ -57,73 +57,63 @@ function App() {
     return new Piece(type, fetchIcon(type), colour, new Coords(y, x));
   };
 
-  function validateCoordinates(potentialCoords: Coords) {
-    // deal with later
-    const typeAtSquare =
-      board[potentialCoords.getY()][potentialCoords.getX()].getType();
-    const colourAtSquare =
-      board[potentialCoords.getY()][potentialCoords.getX()].getColour();
+  // function validateCoordinates(potentialCoords: Coords) {
+  //   // deal with later
+  //   const typeAtSquare =
+  //     board[potentialCoords.getY()][potentialCoords.getX()].getType();
+  //   const colourAtSquare =
+  //     board[potentialCoords.getY()][potentialCoords.getX()].getColour();
 
-    // compare potentialCoords (selected) with current coords (selectedPiece.coords)
-  }
+  //   // compare potentialCoords (selected) with current coords (selectedPiece.coords)
+  // }
 
-  // use both for marking squares and as a check before modifyBoard()
-  function highlightMoves(thisSquareCoords: Coords) {
-    // if piece is not selected, skip
+  // compare the coordinates of the current square with move patterns to check if it can be moved to
+  function highlightMoves(squareCoords: Coords): boolean {
+    console.log(
+      `Square coords: ${squareCoords.getY()}, ${squareCoords.getX()}`
+    );
+
+    // if no piece is selected, skip
     if (selectedPiece.coords === null || selectedPiece.type === null)
       return false;
 
     // if occupied by the same colour, skip
-    if (
-      board[thisSquareCoords.getY()][thisSquareCoords.getX()].getColour === turn
-    )
+    if (board[squareCoords.getY()][squareCoords.getX()]?.getColour === turn)
       return false;
 
+    // relative positions in which a piece may move, depending on type
     const movePatterns = [
-      { type: "pawn", coords: [new Coords(1, 0), new Coords(2, 0)] },
+      {
+        type: "pawn",
+        coords: [new Coords(1, 0), new Coords(2, 0), new Coords(1, -1)],
+      },
       { type: "rook", coords: [new Coords(2, 0), new Coords(3, 0)] },
     ];
 
-    // select move pattern with type of current selection
-    const movePattern = movePatterns.find(
-      (x) => x.type === selectedPiece.type // if error because string != pieceType
-    );
-
+    // select move pattern with type of selected piece
+    const movePattern = movePatterns.find((x) => x.type === selectedPiece.type);
     if (!movePattern) return false;
 
-    // or have the following as a separate shared function, used by this highlight function for each square, and to valid move square clicked.
-    // function accepts desired coordinates as parameter, and has move patterns contained.
     for (let i: number = 0; i < movePattern.coords.length; ++i) {
-      // only return true/ignore false
-      // if typeMovePattern.coords is value relative to selected piece return true
-
-      const yVal: number =
+      const yTotal: number =
         movePattern.coords[i].getY() + selectedPiece.coords.getY();
-      const xVal: number =
+      const xTotal: number =
         movePattern.coords[i].getX() + selectedPiece.coords.getX();
 
       // check if potential square is within bounds
-      if (yVal > 7 || yVal < 0) continue;
-      if (xVal > 7 || xVal < 0) continue;
+      if (yTotal > 7 || yTotal < 0) return false;
+      if (xTotal > 7 || xTotal < 0) return false;
 
-      const squareOnCurrentPattern =
-        board[movePattern.coords[i].getY() + selectedPiece.coords.getY()][
-          movePattern.coords[i].getX() + selectedPiece.coords.getX()
-        ];
-
-      // check if current square matches a pattern.
-      if (
-        squareOnCurrentPattern.getY() === thisSquareCoords.getY() &&
-        squareOnCurrentPattern.getX() === thisSquareCoords.getX()
-      ) {
+      // check if square is within range of current element
+      if (squareCoords.getY() === yTotal && squareCoords.getX() === xTotal) {
+        const valueAtCurrentPattern = board[yTotal][xTotal];
         console.log("Within range");
-        return true;
+        if (
+          valueAtCurrentPattern === null ||
+          valueAtCurrentPattern?.getColour() !== turn
+        )
+          return true;
       }
-
-      console.log(`value: ${squareOnCurrentPattern.getType()}`);
-      console.log(
-        `y: ${squareOnCurrentPattern.getY()} x: ${squareOnCurrentPattern.getX()}`
-      );
     }
 
     // If loop fails to find the square within range, return false.
@@ -192,7 +182,7 @@ function App() {
           onSelect={handleSelect}
           onHighlight={highlightMoves}
         />
-        <button onClick={() => modifyBoard(new Coords(5, 5), new Coords(5, 6))}>
+        <button onClick={() => modifyBoard(new Coords(4, 2), new Coords(4, 3))}>
           TEST: add piece
         </button>
       </main>
