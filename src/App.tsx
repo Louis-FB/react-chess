@@ -158,41 +158,25 @@ function App() {
       const newBoard = prev.map((row: any[], rID: number) =>
         row.map((col: any, cID: number) => {
           if (rID === 0 || rID === 7) {
-            const currentCoords: string = `${rID}${cID}`;
+            const makeColour: Colours = rID === 0 ? "black" : "white";
 
-            switch (currentCoords) {
-              case "00":
-                return loadPiece("rook", "black");
-              case "01":
-                return loadPiece("knight", "black");
-              case "02":
-                return loadPiece("bishop", "black");
-              case "03":
-                return loadPiece("king", "black");
-              case "04":
-                return loadPiece("queen", "black");
-              case "05":
-                return loadPiece("bishop", "black");
-              case "06":
-                return loadPiece("knight", "black");
-              case "07":
-                return loadPiece("rook", "black");
-              case "70":
-                return loadPiece("rook", "white");
-              case "71":
-                return loadPiece("knight", "white");
-              case "72":
-                return loadPiece("bishop", "white");
-              case "73":
-                return loadPiece("king", "white");
-              case "74":
-                return loadPiece("queen", "white");
-              case "75":
-                return loadPiece("bishop", "white");
-              case "76":
-                return loadPiece("knight", "white");
-              case "77":
-                return loadPiece("rook", "white");
+            switch (cID) {
+              case 0:
+                return loadPiece("rook", makeColour);
+              case 1:
+                return loadPiece("knight", makeColour);
+              case 2:
+                return loadPiece("bishop", makeColour);
+              case 3:
+                return loadPiece("king", makeColour);
+              case 4:
+                return loadPiece("queen", makeColour);
+              case 5:
+                return loadPiece("bishop", makeColour);
+              case 6:
+                return loadPiece("knight", makeColour);
+              case 7:
+                return loadPiece("rook", makeColour);
               default:
                 return;
             }
@@ -200,12 +184,18 @@ function App() {
             return loadPiece("pawn", "black");
           } else if (rID === 6) {
             return loadPiece("pawn", "white");
+          } else {
+            return;
           }
         })
       );
       return newBoard;
     });
   };
+
+  useState(() => {
+    initialiseBoard();
+  });
 
   return (
     <>
@@ -225,7 +215,7 @@ function App() {
         <button onClick={() => toggleTurn()} className="btn">
           Toggle turn
         </button>
-        <button onClick={() => initialiseBoard()}>Initialise</button>
+        <button onClick={() => initialiseBoard()}>Reset board</button>
       </main>
     </>
   );
