@@ -23,7 +23,7 @@ export default function Square(Props: PropsInterface) {
         )
       } // formerly Props.value.coords
     >
-      <span className={`icon piece-${Props?.value?.getColour()}`}>
+      <span className={`icon`}>
         {Props.value ? Props.value.getIcon() : null}
       </span>
     </div>

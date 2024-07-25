@@ -3,6 +3,7 @@ import "./App.css";
 import Board from "./Board";
 import { Coords, Piece } from "./data/classes";
 import { Colours, PieceTypes } from "./data/types";
+import { movePatterns } from "./data/moves";
 
 interface SelectedPieceShape {
   coords: Coords | null;
@@ -20,27 +21,46 @@ function App() {
     type: null,
   });
 
-  function fetchIcon(type: PieceTypes) {
-    switch (type) {
-      case "rook":
-        return "♖";
-      case "knight":
-        return "♘";
-      case "bishop":
-        return "♗";
-      case "king":
-        return "♔";
-      case "queen":
-        return "♕";
-      case "pawn":
-        return "♙";
-      default:
-        return "?";
+  function fetchIcon(type: PieceTypes, colour: Colours) {
+    if (colour === "white") {
+      switch (type) {
+        case "rook":
+          return "♖";
+        case "knight":
+          return "♘";
+        case "bishop":
+          return "♗";
+        case "king":
+          return "♔";
+        case "queen":
+          return "♕";
+        case "pawn":
+          return "♙";
+        default:
+          return "?";
+      }
+    } else {
+      switch (type) {
+        case "rook":
+          return "♜";
+        case "knight":
+          return "♞";
+        case "bishop":
+          return "♝";
+        case "king":
+          return "♚";
+        case "queen":
+          return "♛";
+        case "pawn":
+          return "♟︎";
+        default:
+          return "?";
+      }
     }
   }
 
   const loadPiece = (type: PieceTypes, colour: Colours): Piece => {
-    return new Piece(type, fetchIcon(type), colour);
+    return new Piece(type, fetchIcon(type, colour), colour);
   };
 
   // compare the coordinates of the current square with move patterns to check if it can be moved to
@@ -52,18 +72,10 @@ function App() {
     if (board[squareCoords.getY()][squareCoords.getX()]?.getColour === turn)
       return false;
 
-    // relative positions in which a piece may move, depending on type
-    const movePatterns = [
-      {
-        type: "pawn",
-        coords: [new Coords(1, 0), new Coords(2, 0), new Coords(1, -1)],
-      },
-      { type: "rook", coords: [new Coords(2, 0), new Coords(3, 0)] },
-    ];
-
     // select move pattern with type of selected piece
     const movePattern = movePatterns.find((x) => x.type === selectedPiece.type);
     if (!movePattern) return false;
+    //console.log(movePattern.type, selectedPiece.type);
 
     // for
     for (let i: number = 0; i < movePattern.coords.length; ++i) {
@@ -73,8 +85,8 @@ function App() {
         movePattern.coords[i].getX() + selectedPiece.coords.getX();
 
       // check if potential square is within bounds
-      if (yTotal > 7 || yTotal < 0) return false;
-      if (xTotal > 7 || xTotal < 0) return false;
+      if (yTotal > 7 || yTotal < 0) continue;
+      if (xTotal > 7 || xTotal < 0) continue;
 
       // check if square is within range of current element
       if (squareCoords.getY() === yTotal && squareCoords.getX() === xTotal) {
@@ -191,6 +203,7 @@ function App() {
       );
       return newBoard;
     });
+    resetSelection();
   };
 
   useState(() => {

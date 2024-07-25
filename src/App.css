@@ -38,6 +38,7 @@
 }
 .icon {
   font-size: 3rem;
+  color: black;
 }
 
 .black {
@@ -49,13 +50,6 @@
 }
 
 .highlight {
-  outline: 2px solid red;
-}
-
-.piece-black {
-  color: black;
-}
-
-.piece-white {
-  color: white;
+  /* outline: 2px solid red; */
+  background: red;
 }
