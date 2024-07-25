@@ -119,35 +119,41 @@ function App() {
   }
 
   // set currently selected piece
-  function handleSelect(selectedColour: Colours, newCoords: Coords) {
-    // console.log(`Selected colour ${selectedColour}, turn colour: ${turn}`);
-    // console.log("Type value at coords: ");
-    console.log(board[newCoords.getY()][newCoords.getX()]);
+  function handleSelect(newCoords: Coords) {
+    const newSelection = board[newCoords.getY()][newCoords.getX()];
 
-    const selectedSquare = board[newCoords.getY()][newCoords.getX()];
-
+    //
+    // --- RUN IF SELECTION IS CURRENTLY EMPTY ---
+    //
     if (selectedPiece.coords === null) {
       // if square is empty, ignore
-      if (selectedSquare === null) return;
-
-      // if piece is opposite colour, ignore
-      if (selectedColour !== turn) return;
+      if (newSelection === null || newSelection.getColour() !== turn) return;
 
       setSelectedPiece({
         coords: newCoords,
-        type: selectedSquare.getType(),
+        type: newSelection.getType(),
       });
-    } else if (selectedPiece.coords) {
-      if (selectedSquare === null || selectedColour !== turn) {
-        console.log("Move to square");
+    }
+    //
+    // --- RUN IF SELECTION IS OCCUPIED ---
+    //
+    else if (selectedPiece.coords !== null) {
+      if (newSelection == null || newSelection.getColour() !== turn) {
+        checkSquareValidity(newCoords)
+          ? handleMove(newCoords)
+          : console.log("Invalid move");
+        //handleMove(newCoords);
       }
-      if (selectedColour === turn) {
-        console.log("Switch selection");
+      if (newSelection?.getColour() === turn) {
+        console.log("CASE: Switch selection");
         setSelectedPiece({
           coords: newCoords,
-          type: selectedSquare.getType(),
+          type: newSelection.getType(),
         });
+        return;
       }
+    } else {
+      return;
     }
   }
 
@@ -155,16 +161,26 @@ function App() {
     turn === "white" ? setTurn("black") : setTurn("white");
   };
 
-  const modifyBoard = (oldCoords: Coords, newCoords: Coords) => {
+  const resetSelection = () => {
+    setSelectedPiece({ coords: null, type: null });
+  };
+
+  const handleMove = (newCoords: Coords) => {
     setBoard((prev: any[]) => {
-      const newBoard = prev.map((row: any[], xID: number) =>
+      const newBoard = prev.map((row: any[], rID: number) =>
         row.map((col: any, cID: number) => {
-          if (xID === oldCoords.getX() && cID === oldCoords.getY()) {
+          if (selectedPiece.coords == null) return;
+          if (
+            rID === selectedPiece.coords.y &&
+            cID === selectedPiece.coords.x
+          ) {
             return null;
-          } else if (cID === newCoords.getY() && xID === newCoords.getX()) {
+          } else if (rID === newCoords.getY() && cID === newCoords.getX()) {
             return loadPiece(
               "pawn",
-              "white",
+              board[selectedPiece.coords.getY()][
+                selectedPiece.coords.getX()
+              ].getColour(),
               newCoords.getY(),
               newCoords.getX()
             );
@@ -176,29 +192,81 @@ function App() {
       return newBoard;
     });
 
+    resetSelection();
     toggleTurn();
     // remove
+  };
+
+  // const modifyBoard = (oldCoords: Coords, newCoords: Coords) => {
+  //   setBoard((prev: any[]) => {
+  //     const newBoard = prev.map((row: any[], xID: number) =>
+  //       row.map((col: any, cID: number) => {
+  //         if (xID === oldCoords.getX() && cID === oldCoords.getY()) {
+  //           return null;
+  //         } else if (cID === newCoords.getY() && xID === newCoords.getX()) {
+  //           return loadPiece(
+  //             "pawn",
+  //             "white",
+  //             newCoords.getY(),
+  //             newCoords.getX()
+  //           );
+  //         } else {
+  //           return col;
+  //         }
+  //       })
+  //     );
+  //     return newBoard;
+  //   });
+
+  //   resetSelection();
+  //   toggleTurn();
+  //   // remove
+  // };
+
+  const initialiseBoard = () => {
+    setBoard((prev: any[]) => {
+      const newBoard = prev.map((row: any[], rID: number) =>
+        row.map((col: any, cID: number) => {
+          if (rID === 0 && cID === 0) {
+            return loadPiece("pawn", "white", 0, 0);
+          } else if (rID === 0 && cID === 1) {
+            return loadPiece("pawn", "white", 0, 1);
+          } else if (rID === 6 && cID === 0) {
+            return loadPiece("pawn", "black", 0, 1);
+          } else if (rID === 6 && cID === 1) {
+            return loadPiece("pawn", "black", 0, 1);
+          }
+        })
+      );
+      return newBoard;
+    });
   };
 
   return (
     <>
       <main>
         <p>{`${turn.charAt(0).toUpperCase() + turn.slice(1)} turn`}</p>
+        <p>
+          {selectedPiece.coords !== null
+            ? "Piece selected"
+            : "Piece not selected"}
+        </p>
         <Board
           squares={board}
           turn={turn}
           onSelect={handleSelect}
           onCheck={checkSquareValidity}
         />
-        <button
+        {/* <button
           onClick={() => modifyBoard(new Coords(4, 2), new Coords(4, 3))}
           className="btn"
         >
           TEST: add piece
-        </button>
+        </button> */}
         <button onClick={() => toggleTurn()} className="btn">
           Toggle turn
         </button>
+        <button onClick={() => initialiseBoard()}>Initialise</button>
       </main>
     </>
   );

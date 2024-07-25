@@ -51,3 +51,11 @@
 .highlight {
   outline: 2px solid red;
 }
+
+.piece-black {
+  color: black;
+}
+
+.piece-white {
+  color: white;
+}

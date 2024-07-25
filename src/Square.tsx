@@ -18,12 +18,14 @@ export default function Square(Props: PropsInterface) {
       } square`}
       onClick={() =>
         Props.onSelect(
-          Props.value ? Props.value.getColour() : "black",
+          //Props?.value ? Props.value.getColour() : "black",
           Props.coords
         )
       } // formerly Props.value.coords
     >
-      <span className="icon">{Props.value ? Props.value.getIcon() : null}</span>
+      <span className={`icon piece-${Props?.value?.getColour()}`}>
+        {Props.value ? Props.value.getIcon() : null}
+      </span>
     </div>
   );
 }
