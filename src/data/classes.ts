@@ -22,13 +22,11 @@ export class Piece {
   type: PieceTypes;
   icon: string;
   colour: Colours;
-  coords: Coords;
 
-  constructor(type: PieceTypes, icon: string, colour: Colours, coords: Coords) {
+  constructor(type: PieceTypes, icon: string, colour: Colours) {
     this.type = type;
     this.icon = icon;
     this.colour = colour;
-    this.coords = coords;
   }
 
   getType(): PieceTypes {
@@ -41,9 +39,5 @@ export class Piece {
 
   getColour(): Colours {
     return this.colour;
-  }
-
-  getCoords(): Coords {
-    return this.coords;
   }
 }
