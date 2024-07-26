@@ -12,6 +12,15 @@ export const movePatterns = [
     ],
   },
   {
+    type: "whitePawn",
+    coords: [
+      new Coords(-1, 0),
+      new Coords(-2, 0),
+      new Coords(-1, -1),
+      new Coords(-1, 1),
+    ],
+  },
+  {
     type: "rook",
     coords: [
       new Coords(1, 0),

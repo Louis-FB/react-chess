@@ -73,7 +73,16 @@ function App() {
       return false;
 
     // select move pattern with type of selected piece
-    const movePattern = movePatterns.find((x) => x.type === selectedPiece.type);
+    const valueAtSelection =
+      board[selectedPiece.coords.getY()][selectedPiece.coords.getX()];
+
+    const patternSearchQuery: any =
+      valueAtSelection.getType() === "pawn" &&
+      valueAtSelection.getColour() === "white"
+        ? "whitePawn"
+        : selectedPiece.type;
+
+    const movePattern = movePatterns.find((x) => x.type === patternSearchQuery);
     if (!movePattern) return false;
     //console.log(movePattern.type, selectedPiece.type);
 
@@ -121,7 +130,6 @@ function App() {
         //handleMove(newCoords);
       }
       if (newSelection?.getColour() === turn) {
-        console.log("CASE: Switch selection");
         setSelectedPiece({
           coords: newCoords,
           type: newSelection.getType(),
