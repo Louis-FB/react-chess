@@ -63,9 +63,10 @@ function App() {
     return new Piece(type, fetchIcon(type, colour), colour);
   };
 
-  // compare the coordinates of the current square with move patterns to check if it can be moved to
+  // compare the coordinates of the current square and selected square with move patterns to check if selected can be moved to it
   function checkSquareValidity(squareCoords: Coords): boolean {
     // if no piece is selected, skip
+
     if (!selectedPiece.coords) return false;
 
     // if occupied by the same colour, skip
@@ -73,38 +74,46 @@ function App() {
       return false;
 
     // select move pattern with type of selected piece
-    const valueAtSelection =
-      board[selectedPiece.coords.getY()][selectedPiece.coords.getX()];
+    // const valueAtSelection =
+    //   board[selectedPiece.coords.getY()][selectedPiece.coords.getX()];
 
-    const patternSearchQuery: any =
-      valueAtSelection.getType() === "pawn" &&
-      valueAtSelection.getColour() === "white"
-        ? "whitePawn"
-        : selectedPiece.type;
+    // const patternSearchQuery: any =
+    //   valueAtSelection.getType() === "pawn" &&
+    //   valueAtSelection.getColour() === "white"
+    //     ? "whitePawn"
+    //     : selectedPiece.type;
 
-    const movePattern = movePatterns.find((x) => x.type === patternSearchQuery);
+    const patternSelection = "test";
+
+    const movePattern = movePatterns.find((x) => x.type === patternSelection);
     if (!movePattern) return false;
-    //console.log(movePattern.type, selectedPiece.type);
+
+    const currentType =
+      board[selectedPiece.coords.getY()][selectedPiece.coords.getY()].getType();
 
     // for
     for (let i: number = 0; i < movePattern.coords.length; ++i) {
-      const yTotal: number =
-        movePattern.coords[i].getY() + selectedPiece.coords.getY();
-      const xTotal: number =
-        movePattern.coords[i].getX() + selectedPiece.coords.getX();
+      for (let j: number = 0; j < movePattern.coords[0].length; ++j) {
+        const yTotal: number =
+          movePattern.coords[i][j].getY() + selectedPiece.coords.getY();
+        const xTotal: number =
+          movePattern.coords[i][j].getX() + selectedPiece.coords.getX();
 
-      // check if potential square is within bounds
-      if (yTotal > 7 || yTotal < 0) continue;
-      if (xTotal > 7 || xTotal < 0) continue;
+        // check if potential square is within bounds
+        if (yTotal > 7 || yTotal < 0) continue;
+        if (xTotal > 7 || xTotal < 0) continue;
 
-      // check if square is within range of current element
-      if (squareCoords.getY() === yTotal && squareCoords.getX() === xTotal) {
-        const valueAtCurrentPattern = board[yTotal][xTotal];
-        if (
-          !valueAtCurrentPattern ||
-          valueAtCurrentPattern?.getColour() !== turn
-        )
-          return true;
+        // check if square is within range of current element
+        if (squareCoords.getY() === yTotal && squareCoords.getX() === xTotal) {
+          const valueAtCurrentPattern = board[yTotal][xTotal];
+          if (
+            !valueAtCurrentPattern ||
+            valueAtCurrentPattern?.getColour() !== turn
+          )
+            return true;
+        }
+        // if (board[yTotal][xTotal]) break;
+        if (board[yTotal][xTotal] && currentType !== "knight") break;
       }
     }
     return false;
@@ -177,6 +186,10 @@ function App() {
     setBoard((prev: any[]) => {
       const newBoard = prev.map((row: any[], rID: number) =>
         row.map((col: any, cID: number) => {
+          // if (rID === 4 && cID === 4) {
+          //   return loadPiece("pawn", "black");
+          // }
+
           if (rID === 0 || rID === 7) {
             const makeColour: Colours = rID === 0 ? "black" : "white";
 
