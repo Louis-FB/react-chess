@@ -66,7 +66,6 @@ function App() {
   // compare the coordinates of the current square and selected square with move patterns to check if selected can be moved to it
   function checkSquareValidity(squareCoords: Coords): boolean {
     // if no piece is selected, skip
-
     if (!selectedPiece.coords) return false;
 
     // if occupied by the same colour, skip
@@ -74,24 +73,25 @@ function App() {
       return false;
 
     // select move pattern with type of selected piece
-    // const valueAtSelection =
-    //   board[selectedPiece.coords.getY()][selectedPiece.coords.getX()];
+    const valueAtSelection =
+      board[selectedPiece.coords.getY()][selectedPiece.coords.getX()];
 
-    // const patternSearchQuery: any =
-    //   valueAtSelection.getType() === "pawn" &&
-    //   valueAtSelection.getColour() === "white"
-    //     ? "whitePawn"
-    //     : selectedPiece.type;
+    const patternSearchQuery: any =
+      valueAtSelection.getType() === "pawn" &&
+      valueAtSelection.getColour() === "white"
+        ? "whitePawn"
+        : selectedPiece.type;
 
-    const patternSelection = "test";
+    //const patternSelection = "test";
 
-    const movePattern = movePatterns.find((x) => x.type === patternSelection);
+    const movePattern = movePatterns.find((x) => x.type === patternSearchQuery);
     if (!movePattern) return false;
 
     const currentType =
-      board[selectedPiece.coords.getY()][selectedPiece.coords.getY()].getType();
+      board[selectedPiece?.coords?.getY()][
+        selectedPiece?.coords?.getY()
+      ]?.getType();
 
-    // for
     for (let i: number = 0; i < movePattern.coords.length; ++i) {
       for (let j: number = 0; j < movePattern.coords[0].length; ++j) {
         const yTotal: number =
@@ -112,7 +112,6 @@ function App() {
           )
             return true;
         }
-        // if (board[yTotal][xTotal]) break;
         if (board[yTotal][xTotal] && currentType !== "knight") break;
       }
     }
