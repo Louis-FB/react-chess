@@ -3,55 +3,11 @@ import { Coords } from "./classes";
 // relative positions in which a piece may move, depending on type
 export const movePatterns = [
   {
-    type: "test",
-    coords: [
-      [
-        // down
-        new Coords(1, 0),
-        new Coords(2, 0),
-        new Coords(3, 0),
-        new Coords(4, 0),
-        new Coords(5, 0),
-        new Coords(6, 0),
-        new Coords(7, 0),
-      ],
-      [
-        // right
-        new Coords(0, 1),
-        new Coords(0, 2),
-        new Coords(0, 3),
-        new Coords(0, 4),
-        new Coords(0, 5),
-        new Coords(0, 6),
-        new Coords(0, 7),
-      ],
-      [
-        // down
-        new Coords(-1, 0),
-        new Coords(-2, 0),
-        new Coords(-3, 0),
-        new Coords(-4, 0),
-        new Coords(-5, 0),
-        new Coords(-6, 0),
-        new Coords(-7, 0),
-      ],
-      [
-        // left
-        new Coords(0, -1),
-        new Coords(0, -2),
-        new Coords(0, -3),
-        new Coords(0, -4),
-        new Coords(0, -5),
-        new Coords(0, -6),
-        new Coords(0, -7),
-      ],
-    ],
-  },
-  {
     type: "pawn",
     coords: [
-      [new Coords(1, 0)],
-      [new Coords(2, 0)],
+      // down
+      [new Coords(1, 0), new Coords(2, 0)],
+      // down
       [new Coords(1, -1)],
       [new Coords(1, 1)],
     ],
@@ -59,8 +15,7 @@ export const movePatterns = [
   {
     type: "whitePawn",
     coords: [
-      [new Coords(-1, 0)],
-      [new Coords(-2, 0)],
+      [new Coords(-1, 0), new Coords(-2, 0)],
       [new Coords(-1, -1)],
       [new Coords(-1, 1)],
     ],
