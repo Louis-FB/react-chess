@@ -22,11 +22,13 @@ export class Piece {
   type: PieceTypes;
   icon: string;
   colour: Colours;
+  moved: boolean;
 
   constructor(type: PieceTypes, icon: string, colour: Colours) {
     this.type = type;
     this.icon = icon;
     this.colour = colour;
+    this.moved = false;
   }
 
   getType(): PieceTypes {
@@ -39,5 +41,13 @@ export class Piece {
 
   getColour(): Colours {
     return this.colour;
+  }
+
+  setMoved(): void {
+    this.moved = true;
+  }
+
+  getMoved(): boolean {
+    return this.moved;
   }
 }

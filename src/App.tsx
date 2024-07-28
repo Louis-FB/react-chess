@@ -79,7 +79,12 @@ function App() {
         if (board[yTotal][xTotal]) {
           return false;
         }
-        // if (j == 1 && board[selected.getY()][selected.getX()].moved == true) return false;
+        if (
+          j == 1 &&
+          board[selectedPiece.coords.getY()][selectedPiece.coords.getX()]
+            .moved == true
+        )
+          return false;
       } else if (i == 1 || i == 2) {
         if (board[yTotal][xTotal] == null) {
           return false;
@@ -115,11 +120,6 @@ function App() {
       console.error("No move pattern found");
       return false;
     }
-
-    // const currentType =
-    //   board[selectedPiece?.coords?.getY()][
-    //     selectedPiece?.coords?.getY()
-    //   ]?.getType();
 
     for (let i: number = 0; i < movePattern.coords.length; ++i) {
       for (let j: number = 0; j < movePattern.coords[i].length; ++j) {
@@ -203,6 +203,7 @@ function App() {
           ) {
             return null;
           } else if (rID === newCoords.getY() && cID === newCoords.getX()) {
+            board[selectedPiece.coords.y][selectedPiece.coords.x].setMoved();
             return board[selectedPiece.coords.y][selectedPiece.coords.x];
           } else {
             return col;
