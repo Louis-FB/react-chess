@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 import Board from "./Board";
 import { Coords, Piece } from "./data/classes";
@@ -14,6 +14,9 @@ function App() {
   const [board, setBoard]: any[] = useState(
     new Array(8).fill(Array(8).fill(null))
   );
+
+  const [pieceCount, setPieceCount] = useState<any>(null);
+  const [win, setWin] = useState<null | Colours>(null);
 
   const [turn, setTurn] = useState("black");
   const [selectedPiece, setSelectedPiece] = useState<SelectedPieceShape>({
@@ -56,6 +59,82 @@ function App() {
         default:
           return "?";
       }
+    }
+  }
+
+  function checkWin() {
+    if (!pieceCount) return;
+
+    if (pieceCount.white.king < 1) {
+      setWin("black");
+    } else if (pieceCount.black.king < 1) {
+      setWin("white");
+    }
+
+    console.log(win + " won");
+  }
+
+  function calculatePieceCount(): void {
+    let newPieceCount = {
+      black: {
+        rook: 0,
+        knight: 0,
+        bishop: 0,
+        king: 0,
+        queen: 0,
+        pawn: 0,
+      },
+      white: {
+        rook: 0,
+        knight: 0,
+        bishop: 0,
+        king: 0,
+        queen: 0,
+        pawn: 0,
+      },
+    };
+
+    for (let i: number = 0; i < board.length; ++i) {
+      for (let j: number = 0; j < board[i].length; ++j) {
+        if (board[i][j] !== null) {
+          const colour =
+            board[i][j]?.getColour() === "white" ? "white" : "black";
+          const type = board[i][j]?.getType();
+
+          switch (type) {
+            case "rook":
+              newPieceCount[colour].rook++;
+              break;
+            case "knight":
+              newPieceCount[colour].knight++;
+              break;
+            case "bishop":
+              newPieceCount[colour].bishop++;
+              break;
+            case "king":
+              newPieceCount[colour].king++;
+              break;
+            case "queen":
+              newPieceCount[colour].queen++;
+              break;
+            case "pawn":
+              newPieceCount[colour].pawn++;
+              break;
+          }
+        }
+      }
+    }
+    // console.log(
+    //   `COUNT: black king: ${newPieceCount.black.king} white king:${newPieceCount.white.king}`
+    // );
+    setPieceCount(newPieceCount);
+
+    if (newPieceCount.white.king < 1) {
+      setWin("black");
+      console.log("Setting black as winner");
+    } else if (newPieceCount.black.king < 1) {
+      setWin("white");
+      console.log("Setting white as winner");
     }
   }
 
@@ -133,6 +212,7 @@ function App() {
         if (xTotal > 7 || xTotal < 0) continue;
 
         if (valueAtSelection.getType() === "pawn") {
+          console.log("Selected pawn");
           if (handlePawnLogic(i, j, movePattern.coords, squareCoords) === false)
             return false;
         }
@@ -213,6 +293,8 @@ function App() {
       return newBoard;
     });
 
+    //calculatePieceCount();
+    //checkWin();
     resetSelection();
     toggleTurn();
   };
@@ -266,6 +348,10 @@ function App() {
     initialiseBoard();
   });
 
+  useEffect(() => {
+    calculatePieceCount();
+  }, [board]);
+
   return (
     <>
       <main>
@@ -285,6 +371,7 @@ function App() {
           Toggle turn
         </button>
         <button onClick={() => initialiseBoard()}>Reset board</button>
+        <strong>{win ? win + " won" : ""}</strong>
       </main>
     </>
   );
