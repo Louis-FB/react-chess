@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import "./App.css";
 import Board from "./Board";
+import GameInfo from "./GameInfo";
 import { Coords, Piece } from "./data/classes";
 import { Colours, PieceTypes } from "./data/types";
 import { movePatterns } from "./data/moves";
+import Popup from "./Popup";
 
 interface SelectedPieceShape {
   coords: Coords | null;
@@ -16,7 +18,7 @@ function App() {
   );
 
   const [pieceCount, setPieceCount] = useState<any>(null);
-  const [win, setWin] = useState<null | Colours>(null);
+  const [win, setWin] = useState<null | Colours>("black");
 
   const [turn, setTurn] = useState("black");
   const [selectedPiece, setSelectedPiece] = useState<SelectedPieceShape>({
@@ -235,6 +237,7 @@ function App() {
 
   // set currently selected piece
   function handleSelect(newCoords: Coords) {
+    if (win) return;
     const newSelection = board[newCoords.getY()][newCoords.getX()];
 
     if (!selectedPiece.coords) {
@@ -344,6 +347,12 @@ function App() {
     resetSelection();
   };
 
+  function resetBoard() {
+    initialiseBoard();
+    resetSelection();
+    setWin(null);
+  }
+
   useState(() => {
     initialiseBoard();
   });
@@ -355,23 +364,43 @@ function App() {
   return (
     <>
       <main>
-        <p>{`${turn.charAt(0).toUpperCase() + turn.slice(1)} turn`}</p>
-        <p>
+        {/* <p>{`${turn.charAt(0).toUpperCase() + turn.slice(1)} turn`}</p> */}
+        {win ? (
+          <Popup colour={win} onReset={resetBoard} />
+        ) : (
+          <p className="turn-para">
+            {turn.charAt(0).toUpperCase() + turn.slice(1) + " turn"}
+          </p>
+        )}
+        {/* <p>
           {selectedPiece.coords !== null
             ? "Piece selected"
             : "Piece not selected"}
-        </p>
-        <Board
-          squares={board}
-          turn={turn}
-          onSelect={handleSelect}
-          onCheck={checkSquareValidity}
-        />
-        <button onClick={() => toggleTurn()} className="btn">
+        </p> */}
+
+        <div className="board-container">
+          <GameInfo
+            pieces={pieceCount?.white}
+            colour={"white"}
+            onIcon={fetchIcon}
+          />
+          <Board
+            squares={board}
+            turn={turn}
+            onSelect={handleSelect}
+            onCheck={checkSquareValidity}
+          />
+          <GameInfo
+            pieces={pieceCount?.black}
+            colour={"black"}
+            onIcon={fetchIcon}
+          />
+        </div>
+
+        {/* <button onClick={() => toggleTurn()} className="btn">
           Toggle turn
         </button>
-        <button onClick={() => initialiseBoard()}>Reset board</button>
-        <strong>{win ? win + " won" : ""}</strong>
+        <button onClick={() => initialiseBoard()}>Reset board</button> */}
       </main>
     </>
   );
