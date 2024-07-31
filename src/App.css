@@ -62,8 +62,7 @@ main {
 }
 
 .highlight {
-  /* outline: 2px solid red; */
-  background: red;
+  background-color: rgb(210, 255, 142);
 }
 
 .piece-count-container {
@@ -118,4 +117,5 @@ main {
   color: black;
   font-weight: 600;
   font-size: 1.2rem;
+  height: 30px;
 }

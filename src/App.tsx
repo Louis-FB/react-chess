@@ -18,7 +18,7 @@ function App() {
   );
 
   const [pieceCount, setPieceCount] = useState<any>(null);
-  const [win, setWin] = useState<null | Colours>("black");
+  const [win, setWin] = useState<null | Colours>(null);
 
   const [turn, setTurn] = useState("black");
   const [selectedPiece, setSelectedPiece] = useState<SelectedPieceShape>({
@@ -366,7 +366,10 @@ function App() {
       <main>
         {/* <p>{`${turn.charAt(0).toUpperCase() + turn.slice(1)} turn`}</p> */}
         {win ? (
-          <Popup colour={win} onReset={resetBoard} />
+          <>
+            <Popup colour={win} onReset={resetBoard} />
+            <p className="turn-para"> </p>
+          </>
         ) : (
           <p className="turn-para">
             {turn.charAt(0).toUpperCase() + turn.slice(1) + " turn"}
